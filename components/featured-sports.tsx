@@ -6,8 +6,8 @@ import { Card, CardContent } from "@/components/ui/card"
 export function FeaturedSports() {
   const sports = [
     {
-      id: "basketball",
-      name: "Basketball",
+      id: "pickleball",
+      name: "Pickleball",
       venues: 42,
     },
     {
@@ -20,21 +20,21 @@ export function FeaturedSports() {
       name: "Football",
       venues: 56,
     },
-    {
-      id: "tennis",
-      name: "Tennis",
-      venues: 29,
-    },
-    {
-      id: "badminton",
-      name: "Badminton",
-      venues: 45,
-    },
-    {
-      id: "swimming",
-      name: "Swimming",
-      venues: 18,
-    },
+    // {
+    //   id: "tennis",
+    //   name: "Tennis",
+    //   venues: 29,
+    // },
+    // {
+    //   id: "badminton",
+    //   name: "Badminton",
+    //   venues: 45,
+    // },
+    // {
+    //   id: "swimming",
+    //   name: "Swimming",
+    //   venues: 18,
+    // },
   ]
 
   return (

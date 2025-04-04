@@ -8,36 +8,36 @@ export function PopularVenues() {
   const venues = [
     {
       id: 1,
-      name: "Hoops Arena",
-      location: "Andheri West, Mumbai",
+      name: "Parekh Arena",
+      location: "Andheri West, Bijapur",
       rating: 4.8,
-      sport: "Basketball",
+      sport: "Pickleball",
       price: "₹500/hr",
     },
-    {
-      id: 2,
-      name: "Green Field",
-      location: "Powai, Mumbai",
-      rating: 4.6,
-      sport: "Football",
-      price: "₹800/hr",
-    },
-    {
-      id: 3,
-      name: "Smash Court",
-      location: "Bandra, Mumbai",
-      rating: 4.7,
-      sport: "Badminton",
-      price: "₹400/hr",
-    },
-    {
-      id: 4,
-      name: "Cricket Hub",
-      location: "Dadar, Mumbai",
-      rating: 4.5,
-      sport: "Cricket",
-      price: "₹1200/hr",
-    },
+    // {
+    //   id: 2,
+    //   name: "Green Field",
+    //   location: "Powai, Bijapur",
+    //   rating: 4.6,
+    //   sport: "Football",
+    //   price: "₹800/hr",
+    // },
+    // {
+    //   id: 3,
+    //   name: "Smash Court",
+    //   location: "Bandra, Bijapur",
+    //   rating: 4.7,
+    //   sport: "Badminton",
+    //   price: "₹400/hr",
+    // },
+    // {
+    //   id: 4,
+    //   name: "Cricket Hub",
+    //   location: "Dadar, Bijapur",
+    //   rating: 4.5,
+    //   sport: "Cricket",
+    //   price: "₹1200/hr",
+    // },
   ]
 
   return (

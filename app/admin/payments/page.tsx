@@ -333,7 +333,7 @@ export default function PaymentsPage() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All Sports</SelectItem>
-                          <SelectItem value="basketball">Basketball</SelectItem>
+                          <SelectItem value="Pickleball">Pickleball</SelectItem>
                           <SelectItem value="football">Football</SelectItem>
                           <SelectItem value="cricket">Cricket</SelectItem>
                           <SelectItem value="badminton">Badminton</SelectItem>

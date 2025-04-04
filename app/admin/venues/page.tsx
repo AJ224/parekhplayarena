@@ -23,22 +23,22 @@ import { Textarea } from "@/components/ui/textarea"
 
 export default function VenuesPage() {
   const [sports, setSports] = useState([
-    { id: 1, name: "Basketball", venues: 42, active: true },
+    { id: 1, name: "Pickleball", venues: 42, active: true },
     { id: 2, name: "Cricket", venues: 38, active: true },
     { id: 3, name: "Football", venues: 56, active: true },
     { id: 4, name: "Tennis", venues: 29, active: true },
-    { id: 5, name: "Badminton", venues: 45, active: true },
-    { id: 6, name: "Volleyball", venues: 22, active: true },
-    { id: 7, name: "Swimming", venues: 18, active: true },
-    { id: 8, name: "Table Tennis", venues: 24, active: true },
+    // { id: 5, name: "Badminton", venues: 45, active: true },
+    // { id: 6, name: "Volleyball", venues: 22, active: true },
+    // { id: 7, name: "Swimming", venues: 18, active: true },
+    // { id: 8, name: "Table Tennis", venues: 24, active: true },
   ])
 
   const [venues, setVenues] = useState([
     {
       id: 1,
-      name: "Hoops Arena",
-      location: "Andheri West, Mumbai",
-      sport: "Basketball",
+      name: "Parekh Arena",
+      location: "Bijapur",
+      sport: "Pickleball",
       courts: 3,
       rating: 4.8,
       active: true,
@@ -46,48 +46,48 @@ export default function VenuesPage() {
     {
       id: 2,
       name: "Green Field",
-      location: "Powai, Mumbai",
+      location: "Bijapur",
       sport: "Football",
       courts: 2,
       rating: 4.6,
       active: true,
     },
-    {
-      id: 3,
-      name: "Smash Court",
-      location: "Bandra, Mumbai",
-      sport: "Badminton",
-      courts: 6,
-      rating: 4.7,
-      active: true,
-    },
-    {
-      id: 4,
-      name: "Cricket Hub",
-      location: "Dadar, Mumbai",
-      sport: "Cricket",
-      courts: 2,
-      rating: 4.5,
-      active: true,
-    },
-    {
-      id: 5,
-      name: "Tennis Paradise",
-      location: "Juhu, Mumbai",
-      sport: "Tennis",
-      courts: 4,
-      rating: 4.4,
-      active: true,
-    },
-    {
-      id: 6,
-      name: "Aqua Center",
-      location: "Powai, Mumbai",
-      sport: "Swimming",
-      courts: 1,
-      rating: 4.3,
-      active: false,
-    },
+    // {
+    //   id: 3,
+    //   name: "Smash Court",
+    //   location: "Bandra, Bijapur",
+    //   sport: "Badminton",
+    //   courts: 6,
+    //   rating: 4.7,
+    //   active: true,
+    // },
+    // {
+    //   id: 4,
+    //   name: "Cricket Hub",
+    //   location: "Dadar, Bijapur",
+    //   sport: "Cricket",
+    //   courts: 2,
+    //   rating: 4.5,
+    //   active: true,
+    // },
+    // {
+    //   id: 5,
+    //   name: "Tennis Paradise",
+    //   location: "Juhu, Bijapur",
+    //   sport: "Tennis",
+    //   courts: 4,
+    //   rating: 4.4,
+    //   active: true,
+    // },
+    // {
+    //   id: 6,
+    //   name: "Aqua Center",
+    //   location: "Powai, Bijapur",
+    //   sport: "Swimming",
+    //   courts: 1,
+    //   rating: 4.3,
+    //   active: false,
+    // },
   ])
 
   return (
@@ -242,7 +242,7 @@ export default function VenuesPage() {
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="">Select a city</option>
-                        <option value="Mumbai">Mumbai</option>
+                        <option value="Bijapur">Bijapur</option>
                         <option value="Delhi">Delhi</option>
                         <option value="Bangalore">Bangalore</option>
                       </select>

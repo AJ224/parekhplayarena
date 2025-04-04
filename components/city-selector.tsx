@@ -8,21 +8,21 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 const cities = [
-  { value: "mumbai", label: "Mumbai" },
-  { value: "delhi", label: "Delhi" },
-  { value: "bangalore", label: "Bangalore" },
-  { value: "hyderabad", label: "Hyderabad" },
-  { value: "chennai", label: "Chennai" },
-  { value: "kolkata", label: "Kolkata" },
-  { value: "pune", label: "Pune" },
-  { value: "ahmedabad", label: "Ahmedabad" },
-  { value: "jaipur", label: "Jaipur" },
-  { value: "lucknow", label: "Lucknow" },
+  { value: "Bijapur", label: "Bijapur" },
+  // { value: "delhi", label: "Delhi" },
+  // { value: "bangalore", label: "Bangalore" },
+  // { value: "hyderabad", label: "Hyderabad" },
+  // { value: "chennai", label: "Chennai" },
+  // { value: "kolkata", label: "Kolkata" },
+  // { value: "pune", label: "Pune" },
+  // { value: "ahmedabad", label: "Ahmedabad" },
+  // { value: "jaipur", label: "Jaipur" },
+  // { value: "lucknow", label: "Lucknow" },
 ]
 
 export function CitySelector() {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("mumbai")
+  const [value, setValue] = useState("Bijapur")
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

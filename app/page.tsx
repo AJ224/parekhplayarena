@@ -18,7 +18,7 @@ export default function Home() {
       <HeroSection />
 
       <div className="container px-4 py-8 md:py-12">
-        <Card className="w-full max-w-4xl mx-auto -mt-16 relative z-10 shadow-lg">
+        <Card className="w-full max-w-4xl mx-auto -mt-48 relative z-10 shadow-lg">
           <CardContent className="p-6">
             <Tabs defaultValue="book" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">

@@ -119,7 +119,7 @@ export default function SearchPage() {
 
         <div className="flex-1 space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Basketball Courts in Mumbai</h1>
+            <h1 className="text-2xl font-bold">Pickleball Courts in Bijapur</h1>
             <div className="text-sm text-muted-foreground">24 results</div>
           </div>
 
@@ -139,7 +139,7 @@ export default function SearchPage() {
                     <div className="flex flex-col h-full justify-between">
                       <div>
                         <div className="flex justify-between items-start">
-                          <h3 className="text-xl font-semibold">Hoops Arena {item}</h3>
+                          <h3 className="text-xl font-semibold">Parekh Arena {item}</h3>
                           <div className="flex items-center bg-green-50 text-green-700 px-2 py-1 rounded text-sm">
                             <Star className="h-4 w-4 mr-1 fill-green-500 text-green-500" />
                             4.{item}
@@ -147,7 +147,7 @@ export default function SearchPage() {
                         </div>
                         <div className="flex items-center text-muted-foreground mt-1">
                           <MapPin className="h-4 w-4 mr-1" />
-                          <span className="text-sm">Andheri West, Mumbai</span>
+                          <span className="text-sm">Andheri West, Bijapur</span>
                         </div>
                         <div className="mt-4 space-y-2">
                           <div className="flex items-center text-sm">

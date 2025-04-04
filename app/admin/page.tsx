@@ -137,11 +137,11 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="space-y-4">
               {[
-                { name: "Hoops Arena", location: "Mumbai", bookings: 87, occupancy: 92 },
-                { name: "Green Field", location: "Mumbai", bookings: 76, occupancy: 88 },
-                { name: "Smash Court", location: "Mumbai", bookings: 65, occupancy: 78 },
-                { name: "Cricket Hub", location: "Mumbai", bookings: 54, occupancy: 72 },
-                { name: "Tennis Paradise", location: "Delhi", bookings: 48, occupancy: 65 },
+                { name: "Parekh Arena", location: "Bijapur", bookings: 87, occupancy: 92 },
+                // { name: "Green Field", location: "Bijapur", bookings: 76, occupancy: 88 },
+                // { name: "Smash Court", location: "Bijapur", bookings: 65, occupancy: 78 },
+                // { name: "Cricket Hub", location: "Bijapur", bookings: 54, occupancy: 72 },
+                // { name: "Tennis Paradise", location: "Delhi", bookings: 48, occupancy: 65 },
               ].map((venue, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div>

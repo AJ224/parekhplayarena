@@ -17,8 +17,8 @@ export default function ProfilePage() {
   const upcomingBookings = [
     {
       id: "SPT24050789",
-      venue: "Hoops Arena",
-      location: "Andheri West, Mumbai",
+      venue: "Parekh Arena",
+      location: "Andheri West, Bijapur",
       date: "Friday, 5 April 2024",
       time: "7:00 PM - 8:00 PM",
       court: "Court 2 (Indoor)",
@@ -27,7 +27,7 @@ export default function ProfilePage() {
     {
       id: "SPT24050790",
       venue: "Green Field",
-      location: "Powai, Mumbai",
+      location: "Powai, Bijapur",
       date: "Sunday, 7 April 2024",
       time: "9:00 AM - 11:00 AM",
       court: "Field 1 (Outdoor)",
@@ -39,7 +39,7 @@ export default function ProfilePage() {
     {
       id: "SPT24050780",
       venue: "Smash Court",
-      location: "Bandra, Mumbai",
+      location: "Bandra, Bijapur",
       date: "Monday, 1 April 2024",
       time: "6:00 PM - 7:00 PM",
       court: "Court 3",
@@ -48,7 +48,7 @@ export default function ProfilePage() {
     {
       id: "SPT24050770",
       venue: "Cricket Hub",
-      location: "Dadar, Mumbai",
+      location: "Dadar, Bijapur",
       date: "Saturday, 30 March 2024",
       time: "4:00 PM - 6:00 PM",
       court: "Pitch 2",

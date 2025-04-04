@@ -71,10 +71,10 @@ export default function BookingPage() {
                     <Image src="/placeholder.svg?height=80&width=120" alt="Venue image" fill className="object-cover" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Hoops Arena</h3>
+                    <h3 className="font-semibold">Parekh Arena</h3>
                     <div className="flex items-center text-sm text-muted-foreground mt-1">
                       <MapPin className="h-3 w-3 mr-1" />
-                      <span>Andheri West, Mumbai</span>
+                      <span>Andheri West, Bijapur</span>
                     </div>
                     <div className="flex items-center text-sm mt-2">
                       <Calendar className="h-4 w-4 mr-1 text-green-600" />
@@ -254,7 +254,7 @@ export default function BookingPage() {
                     </div>
                     <div className="flex items-center">
                       <MapPin className="h-4 w-4 mr-2 text-green-600" />
-                      <span>Hoops Arena, Andheri West, Mumbai</span>
+                      <span>Parekh Arena, Andheri West, Bijapur</span>
                     </div>
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-2 text-green-600" />

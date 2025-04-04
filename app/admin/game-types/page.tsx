@@ -26,8 +26,8 @@ export default function GameTypesPage() {
   const [gameTypes, setGameTypes] = useState([
     {
       id: 1,
-      name: "Basketball - Full Court",
-      sport: "Basketball",
+      name: "Pickleball - Full Court",
+      sport: "Pickleball",
       minPlayers: 6,
       maxPlayers: 10,
       duration: 60,
@@ -36,8 +36,8 @@ export default function GameTypesPage() {
     },
     {
       id: 2,
-      name: "Basketball - Half Court",
-      sport: "Basketball",
+      name: "Pickleball - Half Court",
+      sport: "Pickleball",
       minPlayers: 2,
       maxPlayers: 6,
       duration: 60,
@@ -99,9 +99,9 @@ export default function GameTypesPage() {
   const [rules, setRules] = useState([
     {
       id: 1,
-      title: "Basketball Court Rules",
-      sport: "Basketball",
-      description: "Standard basketball rules apply. No rough play allowed.",
+      title: "Pickleball Court Rules",
+      sport: "Pickleball",
+      description: "Standard Pickleball rules apply. No rough play allowed.",
       active: true,
     },
     {
@@ -177,11 +177,11 @@ export default function GameTypesPage() {
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="">Select a sport</option>
-                        <option value="Basketball">Basketball</option>
+                        <option value="Pickleball">Pickleball</option>
                         <option value="Football">Football</option>
                         <option value="Cricket">Cricket</option>
-                        <option value="Badminton">Badminton</option>
-                        <option value="Tennis">Tennis</option>
+                        {/* <option value="Badminton">Badminton</option>
+                        <option value="Tennis">Tennis</option> */}
                       </select>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -310,11 +310,11 @@ export default function GameTypesPage() {
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="">Select a sport</option>
-                        <option value="Basketball">Basketball</option>
+                        <option value="Pickleball">Pickleball</option>
                         <option value="Football">Football</option>
                         <option value="Cricket">Cricket</option>
-                        <option value="Badminton">Badminton</option>
-                        <option value="Tennis">Tennis</option>
+                        {/* <option value="Badminton">Badminton</option>
+                        <option value="Tennis">Tennis</option> */}
                       </select>
                     </div>
                     <div className="space-y-2">
@@ -324,7 +324,7 @@ export default function GameTypesPage() {
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="">All Venues</option>
-                        <option value="Hoops Arena">Hoops Arena</option>
+                        <option value="Parekh Arena">Parekh Arena</option>
                         <option value="Green Field">Green Field</option>
                         <option value="Smash Court">Smash Court</option>
                       </select>

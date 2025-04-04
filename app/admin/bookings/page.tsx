@@ -28,8 +28,8 @@ export default function BookingsPage() {
     {
       id: "SPT24050789",
       user: "Rahul Sharma",
-      venue: "Hoops Arena",
-      sport: "Basketball",
+      venue: "Parekh Arena",
+      sport: "Pickleball",
       date: "05 Apr 2024",
       time: "7:00 PM - 8:00 PM",
       amount: "₹550",
@@ -65,21 +65,21 @@ export default function BookingsPage() {
       amount: "₹1200",
       status: "confirmed",
     },
-    {
-      id: "SPT24050785",
-      user: "Vikram Joshi",
-      venue: "Tennis Paradise",
-      sport: "Tennis",
-      date: "05 Apr 2024",
-      time: "11:00 AM - 12:00 PM",
-      amount: "₹600",
-      status: "cancelled",
-    },
+    // {
+    //   id: "SPT24050785",
+    //   user: "Vikram Joshi",
+    //   venue: "Tennis Paradise",
+    //   sport: "Tennis",
+    //   date: "05 Apr 2024",
+    //   time: "11:00 AM - 12:00 PM",
+    //   amount: "₹600",
+    //   status: "cancelled",
+    // },
     {
       id: "SPT24050784",
       user: "Ananya Desai",
-      venue: "Hoops Arena",
-      sport: "Basketball",
+      venue: "Parekh Arena",
+      sport: "Pickleball",
       date: "06 Apr 2024",
       time: "6:00 PM - 7:00 PM",
       amount: "₹550",
@@ -133,7 +133,7 @@ export default function BookingsPage() {
                       <SelectValue placeholder="Select venue" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="hoops-arena">Hoops Arena</SelectItem>
+                      <SelectItem value="hoops-arena">Parekh Arena</SelectItem>
                       <SelectItem value="green-field">Green Field</SelectItem>
                       <SelectItem value="smash-court">Smash Court</SelectItem>
                       <SelectItem value="cricket-hub">Cricket Hub</SelectItem>
@@ -230,7 +230,7 @@ export default function BookingsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All venues</SelectItem>
-                    <SelectItem value="hoops-arena">Hoops Arena</SelectItem>
+                    <SelectItem value="hoops-arena">Parekh Arena</SelectItem>
                     <SelectItem value="green-field">Green Field</SelectItem>
                     <SelectItem value="smash-court">Smash Court</SelectItem>
                     <SelectItem value="cricket-hub">Cricket Hub</SelectItem>
@@ -245,7 +245,7 @@ export default function BookingsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All sports</SelectItem>
-                    <SelectItem value="basketball">Basketball</SelectItem>
+                    <SelectItem value="Pickleball">Pickleball</SelectItem>
                     <SelectItem value="football">Football</SelectItem>
                     <SelectItem value="cricket">Cricket</SelectItem>
                     <SelectItem value="badminton">Badminton</SelectItem>

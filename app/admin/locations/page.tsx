@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function LocationsPage() {
   const [cities, setCities] = useState([
-    { id: 1, name: "Mumbai", venues: 42, active: true },
+    { id: 1, name: "Bijapur", venues: 42, active: true },
     { id: 2, name: "Delhi", venues: 38, active: true },
     { id: 3, name: "Bangalore", venues: 35, active: true },
     { id: 4, name: "Hyderabad", venues: 28, active: true },
@@ -33,11 +33,11 @@ export default function LocationsPage() {
   ])
 
   const [locations, setLocations] = useState([
-    { id: 1, name: "Andheri West", city: "Mumbai", venues: 12, active: true },
-    { id: 2, name: "Bandra", city: "Mumbai", venues: 10, active: true },
-    { id: 3, name: "Powai", city: "Mumbai", venues: 8, active: true },
-    { id: 4, name: "Dadar", city: "Mumbai", venues: 7, active: true },
-    { id: 5, name: "Juhu", city: "Mumbai", venues: 5, active: true },
+    { id: 1, name: "Andheri West", city: "Bijapur", venues: 12, active: true },
+    { id: 2, name: "Bandra", city: "Bijapur", venues: 10, active: true },
+    { id: 3, name: "Powai", city: "Bijapur", venues: 8, active: true },
+    { id: 4, name: "Dadar", city: "Bijapur", venues: 7, active: true },
+    { id: 5, name: "Juhu", city: "Bijapur", venues: 5, active: true },
     { id: 6, name: "Connaught Place", city: "Delhi", venues: 9, active: true },
     { id: 7, name: "Vasant Kunj", city: "Delhi", venues: 8, active: true },
     { id: 8, name: "Indiranagar", city: "Bangalore", venues: 11, active: true },

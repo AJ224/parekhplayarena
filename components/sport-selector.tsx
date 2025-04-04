@@ -8,21 +8,21 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 const sports = [
-  { value: "basketball", label: "Basketball" },
+  { value: "Pickleball", label: "Pickleball" },
   { value: "cricket", label: "Cricket" },
   { value: "football", label: "Football" },
-  { value: "tennis", label: "Tennis" },
-  { value: "badminton", label: "Badminton" },
-  { value: "volleyball", label: "Volleyball" },
-  { value: "swimming", label: "Swimming" },
-  { value: "table-tennis", label: "Table Tennis" },
-  { value: "squash", label: "Squash" },
-  { value: "yoga", label: "Yoga" },
+  // { value: "tennis", label: "Tennis" },
+  // { value: "badminton", label: "Badminton" },
+  // { value: "volleyball", label: "Volleyball" },
+  // { value: "swimming", label: "Swimming" },
+  // { value: "table-tennis", label: "Table Tennis" },
+  // { value: "squash", label: "Squash" },
+  // { value: "yoga", label: "Yoga" },
 ]
 
 export function SportSelector() {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("basketball")
+  const [value, setValue] = useState("Pickleball")
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

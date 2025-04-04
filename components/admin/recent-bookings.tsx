@@ -12,7 +12,7 @@ export function AdminRecentBookings() {
         email: "rahul.s@example.com",
         avatar: "/placeholder.svg?height=32&width=32",
       },
-      venue: "Hoops Arena",
+      venue: "Parekh Arena",
       date: "05 Apr 2024",
       time: "7:00 PM",
       amount: "₹550",

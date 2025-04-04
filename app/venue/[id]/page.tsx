@@ -47,7 +47,7 @@ export default function VenuePage() {
 
         <div>
           <div className="flex justify-between items-start">
-            <h1 className="text-3xl font-bold">Hoops Arena</h1>
+            <h1 className="text-3xl font-bold">Parekh Arena</h1>
             <div className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full">
               <Star className="h-4 w-4 mr-1 fill-green-500 text-green-500" />
               4.8 (124 reviews)
@@ -55,7 +55,7 @@ export default function VenuePage() {
           </div>
           <div className="flex items-center text-muted-foreground mt-2">
             <MapPin className="h-4 w-4 mr-1" />
-            <span>Andheri West, Mumbai</span>
+            <span>Andheri West, Bijapur</span>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function VenuePage() {
             </TabsList>
             <TabsContent value="about" className="space-y-4 pt-4">
               <p>
-                Hoops Arena is a premium basketball facility featuring 3 professional-grade indoor courts. The venue
+                Parekh Arena is a premium Pickleball facility featuring 3 professional-grade indoor courts. The venue
                 offers state-of-the-art facilities for both casual players and serious athletes.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
