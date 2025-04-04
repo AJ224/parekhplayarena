@@ -46,7 +46,12 @@ export function PopularVenues() {
         <Link href={`/venue/${venue.id}`} key={venue.id}>
           <Card className="overflow-hidden hover:shadow-md transition-shadow">
             <div className="relative h-40">
-              <Image src={`/football.jpg?height=160&width=320`} alt={venue.name} fill className="object-cover" />
+              <Image
+                src="https://img.freepik.com/free-photo/padel-blade-racket-resting-net_657883-605.jpg?t=st=1743779801~exp=1743783401~hmac=ef5456259910aedbd38240c4393be889b5de572ef006c620c1cc4ce94ea9bc1a&w=900"
+                alt={venue.name}
+                fill
+                className="object-cover"
+              />
               <div className="absolute top-2 right-2 bg-white/90 text-green-700 px-2 py-1 rounded-full text-xs font-medium flex items-center">
                 <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
                 {venue.rating}
