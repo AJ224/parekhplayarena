@@ -60,7 +60,7 @@ export default function LocationsPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Cities</CardTitle>
-                <CardDescription>Manage cities where SportsSpot is available</CardDescription>
+                <CardDescription>Manage cities where ParekhArena is available</CardDescription>
               </div>
               <Dialog>
                 <DialogTrigger asChild>
@@ -72,7 +72,7 @@ export default function LocationsPage() {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Add New City</DialogTitle>
-                    <DialogDescription>Add a new city where SportsSpot will be available</DialogDescription>
+                    <DialogDescription>Add a new city where ParekhArena will be available</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">

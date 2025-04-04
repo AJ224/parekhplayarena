@@ -36,29 +36,124 @@ export default function VenuePage() {
 
   return (
     <main className="container px-4 py-8">
+      {/* Header section with image and title remains at top for all screen sizes */}
+      <div className="space-y-6 mb-8">
+        <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden">
+          <Image src="/placeholder.svg?height=400&width=800" alt="Venue image" fill className="object-cover" />
+          <Button variant="outline" size="icon" className="absolute top-4 right-4 bg-white/80 hover:bg-white">
+            <Share2 className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div>
+          <div className="flex justify-between items-start">
+            <h1 className="text-3xl font-bold">Hoops Arena</h1>
+            <div className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full">
+              <Star className="h-4 w-4 mr-1 fill-green-500 text-green-500" />
+              4.8 (124 reviews)
+            </div>
+          </div>
+          <div className="flex items-center text-muted-foreground mt-2">
+            <MapPin className="h-4 w-4 mr-1" />
+            <span>Andheri West, Mumbai</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content area with responsive layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden">
-            <Image src="/placeholder.svg?height=400&width=800" alt="Venue image" fill className="object-cover" />
-            <Button variant="outline" size="icon" className="absolute top-4 right-4 bg-white/80 hover:bg-white">
-              <Share2 className="h-4 w-4" />
-            </Button>
-          </div>
+        {/* Booking section - visible first on mobile */}
+        <div className="lg:col-span-1 lg:order-2 space-y-6">
+          <Card>
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-xl font-semibold">Book a Court</h2>
 
-          <div>
-            <div className="flex justify-between items-start">
-              <h1 className="text-3xl font-bold">Hoops Arena</h1>
-              <div className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full">
-                <Star className="h-4 w-4 mr-1 fill-green-500 text-green-500" />
-                4.8 (124 reviews)
+              <div className="space-y-2">
+                <h3 className="font-medium text-sm">Select Date</h3>
+                <DatePicker />
               </div>
-            </div>
-            <div className="flex items-center text-muted-foreground mt-2">
-              <MapPin className="h-4 w-4 mr-1" />
-              <span>Andheri West, Mumbai</span>
-            </div>
-          </div>
 
+              <div className="space-y-2">
+                <h3 className="font-medium text-sm">Select Time Slot</h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {timeSlots.map((slot) => (
+                    <Button
+                      key={slot}
+                      variant={selectedSlot === slot ? "default" : "outline"}
+                      className="text-xs py-1 h-auto"
+                      onClick={() => setSelectedSlot(slot)}
+                    >
+                      {slot}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-medium text-sm">Select Court</h3>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button variant="outline" className="text-xs py-1 h-auto">
+                    Court 1
+                  </Button>
+                  <Button variant="outline" className="text-xs py-1 h-auto">
+                    Court 2
+                  </Button>
+                  <Button variant="outline" className="text-xs py-1 h-auto">
+                    Court 3
+                  </Button>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Court fee</span>
+                  <span>₹500</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Service fee</span>
+                  <span>₹50</span>
+                </div>
+                <div className="flex justify-between font-bold">
+                  <span>Total</span>
+                  <span>₹550</span>
+                </div>
+              </div>
+
+              <Button className="w-full" asChild>
+                <Link href="/booking">Proceed to Book</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-lg font-semibold">Court Rules</h2>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start">
+                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
+                  <span>Proper sports shoes required</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
+                  <span>Arrive 15 minutes before your slot</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
+                  <span>Cancellation policy: 24 hours notice for full refund</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
+                  <span>No food or drinks on the court</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Content tabs - below booking on mobile */}
+        <div className="lg:col-span-2 lg:order-1 space-y-6">
           <Tabs defaultValue="about">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="about">About</TabsTrigger>
@@ -160,97 +255,7 @@ export default function VenuePage() {
             </TabsContent>
           </Tabs>
         </div>
-
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Book a Court</h2>
-
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm">Select Date</h3>
-                <DatePicker />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm">Select Time Slot</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {timeSlots.map((slot) => (
-                    <Button
-                      key={slot}
-                      variant={selectedSlot === slot ? "default" : "outline"}
-                      className="text-xs py-1 h-auto"
-                      onClick={() => setSelectedSlot(slot)}
-                    >
-                      {slot}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm">Select Court</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <Button variant="outline" className="text-xs py-1 h-auto">
-                    Court 1
-                  </Button>
-                  <Button variant="outline" className="text-xs py-1 h-auto">
-                    Court 2
-                  </Button>
-                  <Button variant="outline" className="text-xs py-1 h-auto">
-                    Court 3
-                  </Button>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Court fee</span>
-                  <span>₹500</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Service fee</span>
-                  <span>₹50</span>
-                </div>
-                <div className="flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>₹550</span>
-                </div>
-              </div>
-
-              <Button className="w-full" asChild>
-                <Link href="/booking">Proceed to Book</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-lg font-semibold">Court Rules</h2>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>Proper sports shoes required</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>Arrive 15 minutes before your slot</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>Cancellation policy: 24 hours notice for full refund</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>No food or drinks on the court</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </main>
   )
 }
-

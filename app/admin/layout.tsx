@@ -90,7 +90,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="p-6 border-b">
               <Link href="/admin" className="flex items-center gap-2 font-bold text-xl">
                 <Globe className="h-6 w-6 text-green-600" />
-                <span>SportsSpot Admin</span>
+                <span>ParekhArena Admin</span>
               </Link>
             </div>
             <nav className="flex-1 p-4 space-y-1">
@@ -127,7 +127,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="p-6 border-b">
             <Link href="/admin" className="flex items-center gap-2 font-bold text-xl">
               <Globe className="h-6 w-6 text-green-600" />
-              <span>SportsSpot Admin</span>
+              <span>ParekhArena Admin</span>
             </Link>
           </div>
           <nav className="flex-1 p-4 space-y-1">

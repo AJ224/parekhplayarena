@@ -103,7 +103,7 @@ export default function NotificationsPage() {
     {
       id: 4,
       name: "OTP Verification",
-      content: "Your OTP for SportsSpot is {otp}. Valid for 10 minutes.",
+      content: "Your OTP for ParekhArena is {otp}. Valid for 10 minutes.",
       type: "sms",
       trigger: "otp_verification",
       active: true,
