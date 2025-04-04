@@ -43,7 +43,7 @@ export function FeaturedSports() {
         <Link href={`/search?sport=${sport.id}`} key={sport.id}>
           <Card className="overflow-hidden hover:shadow-md transition-shadow h-full">
             <div className="relative h-32">
-              <Image src={`/placeholder.svg?height=128&width=200`} alt={sport.name} fill className="object-cover" />
+              <Image src={`/pickleball.jpg?height=128&width=200`} alt={sport.name} fill className="object-cover" />
             </div>
             <CardContent className="p-3 text-center">
               <h3 className="font-medium">{sport.name}</h3>

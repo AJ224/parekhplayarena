@@ -4,7 +4,7 @@ export function HeroSection() {
   return (
     <div className="relative h-[500px] w-full overflow-hidden">
       <Image
-        src="/placeholder.svg?height=500&width=1200"
+        src="https://img.freepik.com/free-photo/sports-center_1127-4159.jpg?t=st=1743778373~exp=1743781973~hmac=b0e3eb8b371950cfffe29b701be5efcde78582137eb221d29a6e50d68c5e39d2&w=996"
         alt="Sports arena"
         fill
         className="object-cover brightness-75"
