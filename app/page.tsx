@@ -40,8 +40,10 @@ export default function Home() {
                     <DatePicker />
                   </div>
                 </div>
-                <Button className="w-full" size="lg">
-                  Search Courts <Search className="ml-2 h-4 w-4" />
+                <Button className="w-full" size="lg" asChild>
+                  <Link href="/search">
+                    Search Courts <Search className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </TabsContent>
               <TabsContent value="manage" className="space-y-4">
@@ -126,4 +128,3 @@ export default function Home() {
     </main>
   )
 }
-

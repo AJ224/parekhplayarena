@@ -58,4 +58,3 @@ export function CitySelector() {
     </Popover>
   )
 }
-

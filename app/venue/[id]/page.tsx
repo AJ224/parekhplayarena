@@ -1,253 +1,416 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { ArrowLeft, Clock, MapPin, Star, Users, Wifi, Car, Shirt, Coffee, Dumbbell } from "lucide-react"
 import Image from "next/image"
-import { Clock, Info, MapPin, Phone, Share2, Star, Users } from "lucide-react"
+import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DatePicker } from "@/components/date-picker"
+import { Skeleton } from "@/components/ui/skeleton"
+
+interface Venue {
+  id: string
+  name: string
+  description: string
+  address: string
+  phone: string
+  email: string
+  rating: number
+  total_reviews: number
+  price_per_hour: number
+  images: string[]
+  amenities: string[]
+  rules: string[]
+  opening_time: string
+  closing_time: string
+  locations?: {
+    name: string
+    cities?: {
+      name: string
+      state: string
+    }
+  }
+  sports?: {
+    name: string
+    description: string
+  }
+  courts?: Array<{
+    id: string
+    name: string
+    type: string
+    capacity: number
+    is_active: boolean
+  }>
+}
+
+const amenityIcons: Record<string, any> = {
+  Parking: Car,
+  WiFi: Wifi,
+  "Changing Rooms": Shirt,
+  Café: Coffee,
+  "Equipment Rental": Dumbbell,
+}
 
 export default function VenuePage() {
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const params = useParams()
+  const router = useRouter()
+  const [venue, setVenue] = useState<Venue | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedCourt, setSelectedCourt] = useState<string>("")
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0])
+  const [selectedTime, setSelectedTime] = useState<string>("")
+
+  useEffect(() => {
+    const fetchVenue = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+
+        console.log("Fetching venue with ID:", params.id)
+        const response = await fetch(`/api/venues/${params.id}`)
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || "Failed to fetch venue")
+        }
+
+        const data = await response.json()
+        console.log("Venue data received:", data)
+
+        setVenue(data.venue)
+
+        // Set default court selection
+        if (data.venue.courts && data.venue.courts.length > 0) {
+          setSelectedCourt(data.venue.courts[0].id)
+        }
+      } catch (error) {
+        console.error("Error fetching venue:", error)
+        setError(error instanceof Error ? error.message : "Failed to load venue")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (params.id) {
+      fetchVenue()
+    }
+  }, [params.id])
+
+  const handleBookNow = () => {
+    if (!selectedCourt || !selectedDate || !selectedTime) {
+      alert("Please select a court, date, and time slot")
+      return
+    }
+
+    const bookingParams = new URLSearchParams({
+      venue: params.id as string,
+      court: selectedCourt,
+      date: selectedDate,
+      time: selectedTime,
+    })
+
+    router.push(`/booking?${bookingParams.toString()}`)
+  }
 
   const timeSlots = [
-    "06:00 AM",
-    "07:00 AM",
-    "08:00 AM",
-    "09:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "01:00 PM",
-    "02:00 PM",
-    "03:00 PM",
-    "04:00 PM",
-    "05:00 PM",
-    "06:00 PM",
-    "07:00 PM",
-    "08:00 PM",
-    "09:00 PM",
-    "10:00 PM",
+    "06:00-07:00",
+    "07:00-08:00",
+    "08:00-09:00",
+    "09:00-10:00",
+    "10:00-11:00",
+    "11:00-12:00",
+    "12:00-13:00",
+    "13:00-14:00",
+    "14:00-15:00",
+    "15:00-16:00",
+    "16:00-17:00",
+    "17:00-18:00",
+    "18:00-19:00",
+    "19:00-20:00",
+    "20:00-21:00",
+    "21:00-22:00",
   ]
+
+  if (isLoading) {
+    return (
+      <main className="container px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <Skeleton className="h-8 w-32" />
+          <Skeleton className="h-64 w-full rounded-lg" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-48 w-full" />
+            </div>
+            <div className="space-y-4">
+              <Skeleton className="h-64 w-full" />
+            </div>
+          </div>
+        </div>
+      </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className="container px-4 py-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-2xl font-bold text-red-600">Error Loading Venue</h1>
+          <p className="text-muted-foreground mt-2">{error}</p>
+          <Button asChild className="mt-4">
+            <Link href="/search">Back to Search</Link>
+          </Button>
+        </div>
+      </main>
+    )
+  }
+
+  if (!venue) {
+    return (
+      <main className="container px-4 py-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-2xl font-bold">Venue not found</h1>
+          <p className="text-muted-foreground mt-2">The venue you're looking for doesn't exist.</p>
+          <Button asChild className="mt-4">
+            <Link href="/search">Back to Search</Link>
+          </Button>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="container px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden">
-            <Image src="/placeholder.svg?height=400&width=800" alt="Venue image" fill className="object-cover" />
-            <Button variant="outline" size="icon" className="absolute top-4 right-4 bg-white/80 hover:bg-white">
-              <Share2 className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <div>
-            <div className="flex justify-between items-start">
-              <h1 className="text-3xl font-bold">Hoops Arena</h1>
-              <div className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full">
-                <Star className="h-4 w-4 mr-1 fill-green-500 text-green-500" />
-                4.8 (124 reviews)
-              </div>
-            </div>
-            <div className="flex items-center text-muted-foreground mt-2">
-              <MapPin className="h-4 w-4 mr-1" />
-              <span>Andheri West, Mumbai</span>
-            </div>
-          </div>
-
-          <Tabs defaultValue="about">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="about">About</TabsTrigger>
-              <TabsTrigger value="amenities">Amenities</TabsTrigger>
-              <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            </TabsList>
-            <TabsContent value="about" className="space-y-4 pt-4">
-              <p>
-                Hoops Arena is a premium basketball facility featuring 3 professional-grade indoor courts. The venue
-                offers state-of-the-art facilities for both casual players and serious athletes.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div className="flex items-center space-x-2">
-                  <Users className="h-5 w-5 text-green-600" />
-                  <span>Capacity: 5v5 full court</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-5 w-5 text-green-600" />
-                  <span>Hours: 6:00 AM - 10:00 PM</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-5 w-5 text-green-600" />
-                  <span>Contact: +91 9876543210</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Info className="h-5 w-5 text-green-600" />
-                  <span>Established: 2018</span>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="font-semibold text-lg mb-2">Location</h3>
-                <div className="h-[300px] bg-slate-200 rounded-lg flex items-center justify-center">
-                  <p className="text-slate-500">Map view would be displayed here</p>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="amenities" className="space-y-4 pt-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4">
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Wooden Court</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Changing Rooms</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Shower Facilities</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Equipment Rental</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Parking</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Café</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>Drinking Water</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span>First Aid</span>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="reviews" className="space-y-4 pt-4">
-              <div className="space-y-6">
-                {[1, 2, 3].map((review) => (
-                  <div key={review} className="border-b pb-4 last:border-0">
-                    <div className="flex justify-between">
-                      <div className="font-medium">Rahul S.</div>
-                      <div className="flex items-center">
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      </div>
-                    </div>
-                    <div className="text-sm text-muted-foreground mt-1">Visited on 12 Mar 2023</div>
-                    <p className="mt-2 text-sm">
-                      Great facility with well-maintained courts. The staff was friendly and helpful. Will definitely
-                      come back again for my weekend games.
-                    </p>
-                  </div>
-                ))}
-                <Button variant="outline" className="w-full">
-                  Load More Reviews
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center mb-6">
+          <Link href="/search" className="flex items-center text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to search
+          </Link>
         </div>
 
         <div className="space-y-6">
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-xl font-semibold">Book a Court</h2>
+          {/* Hero Image */}
+          <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+            <Image
+              src={venue.images?.[0] || "/placeholder.svg?height=400&width=800&text=Venue+Image"}
+              alt={venue.name}
+              fill
+              className="object-cover"
+            />
+          </div>
 
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm">Select Date</h3>
-                <DatePicker />
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Venue Info */}
+              <div>
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h1 className="text-3xl font-bold">{venue.name}</h1>
+                    <div className="flex items-center text-muted-foreground mt-1">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      <span>
+                        {venue.locations?.name ? `${venue.locations.name}, ` : ""}
+                        {venue.locations?.cities?.name || venue.address}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-lg">
+                    <Star className="h-4 w-4 mr-1 fill-green-500 text-green-500" />
+                    <span className="font-medium">{venue.rating.toFixed(1)}</span>
+                    <span className="text-sm ml-1">({venue.total_reviews} reviews)</span>
+                  </div>
+                </div>
 
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm">Select Time Slot</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {timeSlots.map((slot) => (
-                    <Button
-                      key={slot}
-                      variant={selectedSlot === slot ? "default" : "outline"}
-                      className="text-xs py-1 h-auto"
-                      onClick={() => setSelectedSlot(slot)}
-                    >
-                      {slot}
-                    </Button>
-                  ))}
+                <p className="text-muted-foreground">{venue.description}</p>
+
+                <div className="flex items-center gap-4 mt-4 text-sm">
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-1 text-green-600" />
+                    <span>
+                      {venue.opening_time} - {venue.closing_time}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="h-4 w-4 mr-1 text-green-600" />
+                    <span>{venue.sports?.name}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm">Select Court</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  <Button variant="outline" className="text-xs py-1 h-auto">
-                    Court 1
+              {/* Courts */}
+              {venue.courts && venue.courts.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Available Courts</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {venue.courts
+                        .filter((court) => court.is_active)
+                        .map((court) => (
+                          <div
+                            key={court.id}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                              selectedCourt === court.id
+                                ? "border-green-500 bg-green-50"
+                                : "border-gray-200 hover:border-gray-300"
+                            }`}
+                            onClick={() => setSelectedCourt(court.id)}
+                          >
+                            <h3 className="font-medium">{court.name}</h3>
+                            <p className="text-sm text-muted-foreground">{court.type}</p>
+                            <p className="text-sm text-muted-foreground">Capacity: {court.capacity} players</p>
+                          </div>
+                        ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Amenities */}
+              {venue.amenities && venue.amenities.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Amenities</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {venue.amenities.map((amenity) => {
+                        const IconComponent = amenityIcons[amenity] || Users
+                        return (
+                          <div key={amenity} className="flex items-center">
+                            <IconComponent className="h-4 w-4 mr-2 text-green-600" />
+                            <span className="text-sm">{amenity}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Rules */}
+              {venue.rules && venue.rules.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Rules & Guidelines</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {venue.rules.map((rule, index) => (
+                        <li key={index} className="text-sm flex items-start">
+                          <span className="w-2 h-2 bg-green-600 rounded-full mt-2 mr-3 flex-shrink-0" />
+                          {rule}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Booking Sidebar */}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Book This Venue</CardTitle>
+                  <CardDescription>
+                    Starting from{" "}
+                    <span className="text-2xl font-bold text-green-600">₹{Math.floor(venue.price_per_hour / 100)}</span>
+                    /hour
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Date Selection */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Select Date</label>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      min={new Date().toISOString().split("T")[0]}
+                      className="w-full p-2 border rounded-md"
+                    />
+                  </div>
+
+                  {/* Time Slot Selection */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Select Time Slot</label>
+                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                      {timeSlots.map((slot) => (
+                        <button
+                          key={slot}
+                          onClick={() => setSelectedTime(slot)}
+                          className={`p-2 text-xs border rounded transition-colors ${
+                            selectedTime === slot
+                              ? "border-green-500 bg-green-50 text-green-700"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Pricing */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Court fee (1 hour)</span>
+                      <span>₹{Math.floor(venue.price_per_hour / 100)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Service fee</span>
+                      <span>₹50</span>
+                    </div>
+                    <div className="flex justify-between font-bold">
+                      <span>Total</span>
+                      <span>₹{Math.floor(venue.price_per_hour / 100) + 50}</span>
+                    </div>
+                  </div>
+
+                  <Button className="w-full" onClick={handleBookNow}>
+                    Book Now
                   </Button>
-                  <Button variant="outline" className="text-xs py-1 h-auto">
-                    Court 2
-                  </Button>
-                  <Button variant="outline" className="text-xs py-1 h-auto">
-                    Court 3
-                  </Button>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              <Separator />
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Court fee</span>
-                  <span>₹500</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Service fee</span>
-                  <span>₹50</span>
-                </div>
-                <div className="flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>₹550</span>
-                </div>
-              </div>
-
-              <Button className="w-full">Proceed to Book</Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 space-y-4">
-              <h2 className="text-lg font-semibold">Court Rules</h2>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>Proper sports shoes required</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>Arrive 15 minutes before your slot</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>Cancellation policy: 24 hours notice for full refund</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 mr-2"></div>
-                  <span>No food or drinks on the court</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+              {/* Contact Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contact Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="text-sm">
+                    <span className="font-medium">Address:</span>
+                    <p className="text-muted-foreground">{venue.address}</p>
+                  </div>
+                  {venue.phone && (
+                    <div className="text-sm">
+                      <span className="font-medium">Phone:</span>
+                      <p className="text-muted-foreground">{venue.phone}</p>
+                    </div>
+                  )}
+                  {venue.email && (
+                    <div className="text-sm">
+                      <span className="font-medium">Email:</span>
+                      <p className="text-muted-foreground">{venue.email}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     </main>
   )
 }
-

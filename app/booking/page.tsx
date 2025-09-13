@@ -4,6 +4,7 @@ import { useState } from "react"
 import { ArrowLeft, Calendar, CreditCard, MapPin, Users } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter, useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,6 +16,84 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function BookingPage() {
   const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [bookingData, setBookingData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    paymentMethod: "card",
+  })
+
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Get booking details from URL params (in a real app, this would come from the booking flow)
+  const venueId = searchParams.get("venue") || "1"
+  const courtId = searchParams.get("court") || "1"
+  const date = searchParams.get("date") || "2024-04-05"
+  const time = searchParams.get("time") || "19:00-20:00"
+
+  // Mock venue data (in real app, this would be fetched from database)
+  const venueDetails = {
+    name: "Hoops Arena",
+    location: "Andheri West, Mumbai",
+    court: "Court 2 (Indoor)",
+    date: "Friday, 5 April 2024",
+    time: "7:00 PM - 8:00 PM",
+    courtFee: 500,
+    serviceFee: 50,
+    total: 550,
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setBookingData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleBookingSubmit = async () => {
+    setIsLoading(true)
+
+    try {
+      // In a real app, you would get the user ID from authentication
+      const userId = "user-id-placeholder" // This should come from auth context
+
+      const bookingPayload = {
+        user_id: userId,
+        venue_id: venueId,
+        court_id: courtId,
+        booking_date: date,
+        start_time: time.split("-")[0],
+        end_time: time.split("-")[1],
+        total_amount: venueDetails.total * 100, // Convert to paise
+        service_fee: venueDetails.serviceFee * 100,
+      }
+
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingPayload),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to create booking")
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Redirect to confirmation page
+        router.push(`/booking/${result.booking.id}/confirmation`)
+      } else {
+        throw new Error(result.error || "Failed to create booking")
+      }
+    } catch (error) {
+      console.error("Booking error:", error)
+      alert("Failed to create booking. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <main className="container px-4 py-8">
@@ -71,18 +150,20 @@ export default function BookingPage() {
                     <Image src="/placeholder.svg?height=80&width=120" alt="Venue image" fill className="object-cover" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Hoops Arena</h3>
+                    <h3 className="font-semibold">{venueDetails.name}</h3>
                     <div className="flex items-center text-sm text-muted-foreground mt-1">
                       <MapPin className="h-3 w-3 mr-1" />
-                      <span>Andheri West, Mumbai</span>
+                      <span>{venueDetails.location}</span>
                     </div>
                     <div className="flex items-center text-sm mt-2">
                       <Calendar className="h-4 w-4 mr-1 text-green-600" />
-                      <span>Friday, 5 April 2024 • 7:00 PM - 8:00 PM</span>
+                      <span>
+                        {venueDetails.date} • {venueDetails.time}
+                      </span>
                     </div>
                     <div className="flex items-center text-sm mt-1">
                       <Users className="h-4 w-4 mr-1 text-green-600" />
-                      <span>Court 2 (Indoor)</span>
+                      <span>{venueDetails.court}</span>
                     </div>
                   </div>
                 </div>
@@ -94,15 +175,34 @@ export default function BookingPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Full Name</Label>
-                      <Input id="name" placeholder="Enter your full name" />
+                      <Input
+                        id="name"
+                        placeholder="Enter your full name"
+                        value={bookingData.fullName}
+                        onChange={(e) => handleInputChange("fullName", e.target.value)}
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="Enter your email" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={bookingData.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number</Label>
-                      <Input id="phone" placeholder="Enter your phone number" />
+                      <Input
+                        id="phone"
+                        placeholder="Enter your phone number"
+                        value={bookingData.phone}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        required
+                      />
                     </div>
                   </div>
                 </div>
@@ -112,20 +212,24 @@ export default function BookingPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Court fee (1 hour)</span>
-                    <span>₹500</span>
+                    <span>₹{venueDetails.courtFee}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Service fee</span>
-                    <span>₹50</span>
+                    <span>₹{venueDetails.serviceFee}</span>
                   </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>₹550</span>
+                    <span>₹{venueDetails.total}</span>
                   </div>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" onClick={() => setStep(2)}>
+                <Button
+                  className="w-full"
+                  onClick={() => setStep(2)}
+                  disabled={!bookingData.fullName || !bookingData.email || !bookingData.phone}
+                >
                   Proceed to Payment
                 </Button>
               </CardFooter>
@@ -141,7 +245,10 @@ export default function BookingPage() {
                 <CardDescription>Choose your payment method</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Tabs defaultValue="card">
+                <Tabs
+                  value={bookingData.paymentMethod}
+                  onValueChange={(value) => handleInputChange("paymentMethod", value)}
+                >
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="card">Card</TabsTrigger>
                     <TabsTrigger value="upi">UPI</TabsTrigger>
@@ -199,78 +306,25 @@ export default function BookingPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Court fee (1 hour)</span>
-                    <span>₹500</span>
+                    <span>₹{venueDetails.courtFee}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Service fee</span>
-                    <span>₹50</span>
+                    <span>₹{venueDetails.serviceFee}</span>
                   </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>₹550</span>
+                    <span>₹{venueDetails.total}</span>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-2">
-                <Button className="w-full" onClick={() => setStep(3)}>
-                  <CreditCard className="mr-2 h-4 w-4" /> Pay ₹550
+                <Button className="w-full" onClick={handleBookingSubmit} disabled={isLoading}>
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  {isLoading ? "Processing..." : `Pay ₹${venueDetails.total}`}
                 </Button>
-                <Button variant="outline" className="w-full" onClick={() => setStep(1)}>
+                <Button variant="outline" className="w-full bg-transparent" onClick={() => setStep(1)}>
                   Back
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="space-y-6">
-            <Card>
-              <CardContent className="pt-6 text-center space-y-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8 text-green-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
-                  <p className="text-muted-foreground mt-1">Your booking has been successfully confirmed.</p>
-                </div>
-
-                <div className="bg-muted p-4 rounded-lg text-left">
-                  <div className="font-medium">
-                    Booking Reference: <span className="text-green-600">SPT24050789</span>
-                  </div>
-                  <div className="mt-2 space-y-1 text-sm">
-                    <div className="flex items-center">
-                      <Calendar className="h-4 w-4 mr-2 text-green-600" />
-                      <span>Friday, 5 April 2024 • 7:00 PM - 8:00 PM</span>
-                    </div>
-                    <div className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-2 text-green-600" />
-                      <span>Hoops Arena, Andheri West, Mumbai</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Users className="h-4 w-4 mr-2 text-green-600" />
-                      <span>Court 2 (Indoor)</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-sm text-muted-foreground">
-                  A confirmation email has been sent to your email address.
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col space-y-2">
-                <Button className="w-full">Download Booking Details</Button>
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href="/">Return to Home</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -280,4 +334,3 @@ export default function BookingPage() {
     </main>
   )
 }
-
