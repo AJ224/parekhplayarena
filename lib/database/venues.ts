@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase"
+import { createServerClient } from "@/lib/supabase"
 
 export interface Venue {
   id: string
@@ -48,6 +48,8 @@ export async function getVenues(filters?: {
   priceRange?: [number, number]
   amenities?: string[]
 }) {
+  const supabase = createServerClient()
+  
   let query = supabase
     .from("venues")
     .select(`
@@ -89,6 +91,8 @@ export async function getVenues(filters?: {
 }
 
 export async function getVenueById(venueId: string): Promise<Venue | null> {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase
     .from("venues")
     .select(`
@@ -114,6 +118,8 @@ export async function getVenueById(venueId: string): Promise<Venue | null> {
 }
 
 export async function getVenueAvailability(venueId: string, courtId: string, date: string) {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase
     .from("bookings")
     .select("start_time, end_time")
@@ -137,6 +143,8 @@ export async function searchVenues(
     sport?: string
   },
 ) {
+  const supabase = createServerClient()
+  
   let query = supabase
     .from("venues")
     .select(`

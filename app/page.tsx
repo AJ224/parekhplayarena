@@ -104,7 +104,7 @@ export default function Home() {
                     <MapPin className="h-6 w-6 text-green-600" />
                   </div>
                   <h3 className="font-medium">Multiple Locations</h3>
-                  <p className="text-sm text-slate-500">Access to venues across 50+ cities</p>
+                  <p className="text-sm text-slate-500">Access to venues across multiple cities</p>
                 </div>
                 <div className="flex flex-col items-center space-y-2">
                   <div className="bg-green-100 p-3 rounded-full">
@@ -118,7 +118,7 @@ export default function Home() {
                     <Search className="h-6 w-6 text-green-600" />
                   </div>
                   <h3 className="font-medium">Wide Selection</h3>
-                  <p className="text-sm text-slate-500">15+ sports and 1000+ venues</p>
+                  <p className="text-sm text-slate-500">Multiple sports and venues available</p>
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Edit, MoreHorizontal, Plus, Trash, Trophy } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -20,75 +20,66 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
+
+interface Sport {
+  id: string
+  name: string
+  venues: number
+  is_active: boolean
+}
+
+interface Venue {
+  id: string
+  name: string
+  address: string
+  city: string
+  location: string
+  sport: string
+  courts: number
+  rating: number
+  is_active: boolean
+}
 
 export default function VenuesPage() {
-  const [sports, setSports] = useState([
-    { id: 1, name: "Basketball", venues: 42, active: true },
-    { id: 2, name: "Cricket", venues: 38, active: true },
-    { id: 3, name: "Football", venues: 56, active: true },
-    { id: 4, name: "Tennis", venues: 29, active: true },
-    { id: 5, name: "Badminton", venues: 45, active: true },
-    { id: 6, name: "Volleyball", venues: 22, active: true },
-    { id: 7, name: "Swimming", venues: 18, active: true },
-    { id: 8, name: "Table Tennis", venues: 24, active: true },
-  ])
+  const [sports, setSports] = useState<Sport[]>([])
+  const [venues, setVenues] = useState<Venue[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const [venues, setVenues] = useState([
-    {
-      id: 1,
-      name: "Hoops Arena",
-      location: "Andheri West, Mumbai",
-      sport: "Basketball",
-      courts: 3,
-      rating: 4.8,
-      active: true,
-    },
-    {
-      id: 2,
-      name: "Green Field",
-      location: "Powai, Mumbai",
-      sport: "Football",
-      courts: 2,
-      rating: 4.6,
-      active: true,
-    },
-    {
-      id: 3,
-      name: "Smash Court",
-      location: "Bandra, Mumbai",
-      sport: "Badminton",
-      courts: 6,
-      rating: 4.7,
-      active: true,
-    },
-    {
-      id: 4,
-      name: "Cricket Hub",
-      location: "Dadar, Mumbai",
-      sport: "Cricket",
-      courts: 2,
-      rating: 4.5,
-      active: true,
-    },
-    {
-      id: 5,
-      name: "Tennis Paradise",
-      location: "Juhu, Mumbai",
-      sport: "Tennis",
-      courts: 4,
-      rating: 4.4,
-      active: true,
-    },
-    {
-      id: 6,
-      name: "Aqua Center",
-      location: "Powai, Mumbai",
-      sport: "Swimming",
-      courts: 1,
-      rating: 4.3,
-      active: false,
-    },
-  ])
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      // Fetch sports and venues in parallel
+      const [sportsResponse, venuesResponse] = await Promise.all([
+        fetch('/api/admin/sports'),
+        fetch('/api/admin/venues')
+      ])
+
+      if (!sportsResponse.ok || !venuesResponse.ok) {
+        throw new Error("Failed to fetch data")
+      }
+
+      const [sportsData, venuesData] = await Promise.all([
+        sportsResponse.json(),
+        venuesResponse.json()
+      ])
+
+      setSports(sportsData.sports || [])
+      setVenues(venuesData.venues || [])
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      setError(error instanceof Error ? error.message : "Failed to load data")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -142,57 +133,80 @@ export default function VenuesPage() {
               </Dialog>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Sport Name</TableHead>
-                    <TableHead>Venues</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sports.map((sport) => (
-                    <TableRow key={sport.id}>
-                      <TableCell className="font-medium">{sport.name}</TableCell>
-                      <TableCell>{sport.venues}</TableCell>
-                      <TableCell>
-                        <div
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            sport.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {sport.active ? "Active" : "Inactive"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Trophy className="mr-2 h-4 w-4" />
-                              View Venues
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
-                              <Trash className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+              {isLoading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex items-center space-x-4">
+                      <Skeleton className="h-12 w-12 rounded" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[200px]" />
+                        <Skeleton className="h-4 w-[100px]" />
+                      </div>
+                    </div>
                   ))}
-                </TableBody>
-              </Table>
+                </div>
+              ) : error ? (
+                <div className="text-center py-8">
+                  <p className="text-red-600 mb-4">{error}</p>
+                  <Button onClick={fetchData}>Retry</Button>
+                </div>
+              ) : sports.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No sports found</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Sport Name</TableHead>
+                      <TableHead>Venues</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sports.map((sport) => (
+                      <TableRow key={sport.id}>
+                        <TableCell className="font-medium">{sport.name}</TableCell>
+                        <TableCell>{sport.venues}</TableCell>
+                        <TableCell>
+                          <div
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              sport.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {sport.is_active ? "Active" : "Inactive"}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Open menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Trophy className="mr-2 h-4 w-4" />
+                                View Venues
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">
+                                <Trash className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -287,63 +301,91 @@ export default function VenuesPage() {
               </Dialog>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Venue Name</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Sport</TableHead>
-                    <TableHead>Courts</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {venues.map((venue) => (
-                    <TableRow key={venue.id}>
-                      <TableCell className="font-medium">{venue.name}</TableCell>
-                      <TableCell>{venue.location}</TableCell>
-                      <TableCell>{venue.sport}</TableCell>
-                      <TableCell>{venue.courts}</TableCell>
-                      <TableCell>{venue.rating}</TableCell>
-                      <TableCell>
-                        <div
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            venue.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {venue.active ? "Active" : "Inactive"}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Trophy className="mr-2 h-4 w-4" />
-                              Manage Courts
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
-                              <Trash className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+              {isLoading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex items-center space-x-4">
+                      <Skeleton className="h-12 w-12 rounded" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-[200px]" />
+                        <Skeleton className="h-4 w-[150px]" />
+                      </div>
+                    </div>
                   ))}
-                </TableBody>
-              </Table>
+                </div>
+              ) : error ? (
+                <div className="text-center py-8">
+                  <p className="text-red-600 mb-4">{error}</p>
+                  <Button onClick={fetchData}>Retry</Button>
+                </div>
+              ) : venues.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No venues found</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Venue Name</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Sport</TableHead>
+                      <TableHead>Courts</TableHead>
+                      <TableHead>Rating</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {venues.map((venue) => (
+                      <TableRow key={venue.id}>
+                        <TableCell className="font-medium">{venue.name}</TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{venue.location}</div>
+                            <div className="text-sm text-muted-foreground">{venue.address}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{venue.sport}</TableCell>
+                        <TableCell>{venue.courts}</TableCell>
+                        <TableCell>{venue.rating || "N/A"}</TableCell>
+                        <TableCell>
+                          <div
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              venue.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {venue.is_active ? "Active" : "Inactive"}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Open menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Trophy className="mr-2 h-4 w-4" />
+                                Manage Courts
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">
+                                <Trash className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

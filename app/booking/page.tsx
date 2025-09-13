@@ -63,8 +63,7 @@ export default function BookingPage() {
         booking_date: date,
         start_time: time.split("-")[0],
         end_time: time.split("-")[1],
-        total_amount: venueDetails.total * 100, // Convert to paise
-        service_fee: venueDetails.serviceFee * 100,
+        use_atomic: true, // Use the new atomic booking system
       }
 
       const response = await fetch("/api/bookings", {

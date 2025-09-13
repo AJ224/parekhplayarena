@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { SlotAvailabilityCalendar } from "@/components/slot-availability-calendar"
+import { SlotReservationModal } from "@/components/slot-reservation-modal"
+import { DynamicPricingDisplay } from "@/components/dynamic-pricing-display"
 
 interface Venue {
   id: string
@@ -63,6 +66,9 @@ export default function VenuePage() {
   const [selectedCourt, setSelectedCourt] = useState<string>("")
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0])
   const [selectedTime, setSelectedTime] = useState<string>("")
+  const [selectedSlot, setSelectedSlot] = useState<string>("")
+  const [showReservationModal, setShowReservationModal] = useState(false)
+  const [reservedSlot, setReservedSlot] = useState<any>(null)
 
   useEffect(() => {
     const fetchVenue = async () => {
@@ -99,6 +105,29 @@ export default function VenuePage() {
       fetchVenue()
     }
   }, [params.id])
+
+  const handleSlotSelect = (slot: any) => {
+    setSelectedSlot(slot.id)
+    setSelectedTime(`${slot.time_slots.start_time}-${slot.time_slots.end_time}`)
+  }
+
+  const handleReserveSlot = () => {
+    if (!selectedCourt || !selectedDate || !selectedSlot) {
+      alert("Please select a court, date, and time slot")
+      return
+    }
+
+    setShowReservationModal(true)
+  }
+
+  const handleReservationConfirm = () => {
+    setReservedSlot({
+      court_id: selectedCourt,
+      date: selectedDate,
+      start_time: selectedTime.split("-")[0],
+      end_time: selectedTime.split("-")[1],
+    })
+  }
 
   const handleBookNow = () => {
     if (!selectedCourt || !selectedDate || !selectedTime) {
@@ -339,47 +368,55 @@ export default function VenuePage() {
                     />
                   </div>
 
-                  {/* Time Slot Selection */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Select Time Slot</label>
-                    <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                      {timeSlots.map((slot) => (
-                        <button
-                          key={slot}
-                          onClick={() => setSelectedTime(slot)}
-                          className={`p-2 text-xs border rounded transition-colors ${
-                            selectedTime === slot
-                              ? "border-green-500 bg-green-50 text-green-700"
-                              : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Slot Availability Calendar */}
+                  {selectedCourt && (
+                    <SlotAvailabilityCalendar
+                      courtId={selectedCourt}
+                      date={selectedDate}
+                      onSlotSelect={handleSlotSelect}
+                      selectedSlot={selectedSlot}
+                      showPricing={true}
+                    />
+                  )}
 
                   <Separator />
 
-                  {/* Pricing */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Court fee (1 hour)</span>
-                      <span>₹{Math.floor(venue.price_per_hour / 100)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Service fee</span>
-                      <span>₹50</span>
-                    </div>
-                    <div className="flex justify-between font-bold">
-                      <span>Total</span>
-                      <span>₹{Math.floor(venue.price_per_hour / 100) + 50}</span>
-                    </div>
-                  </div>
+                  {/* Dynamic Pricing */}
+                  {selectedCourt && selectedSlot && (
+                    <DynamicPricingDisplay
+                      venueId={venue.id}
+                      courtId={selectedCourt}
+                      date={selectedDate}
+                      startTime={selectedTime.split("-")[0]}
+                      endTime={selectedTime.split("-")[1]}
+                      basePrice={venue.price_per_hour}
+                      showComparison={true}
+                    />
+                  )}
 
-                  <Button className="w-full" onClick={handleBookNow}>
-                    Book Now
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="space-y-2">
+                    {!reservedSlot ? (
+                      <Button 
+                        className="w-full" 
+                        onClick={handleReserveSlot}
+                        disabled={!selectedCourt || !selectedDate || !selectedSlot}
+                      >
+                        Reserve Slot (15 min)
+                      </Button>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-sm text-green-800 font-medium">
+                            ✓ Slot Reserved for 15 minutes
+                          </p>
+                        </div>
+                        <Button className="w-full" onClick={handleBookNow}>
+                          Complete Booking
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -411,6 +448,21 @@ export default function VenuePage() {
           </div>
         </div>
       </div>
+
+      {/* Slot Reservation Modal */}
+      <SlotReservationModal
+        isOpen={showReservationModal}
+        onClose={() => setShowReservationModal(false)}
+        onConfirm={handleReservationConfirm}
+        slotDetails={{
+          court_id: selectedCourt,
+          date: selectedDate,
+          start_time: selectedTime.split("-")[0],
+          end_time: selectedTime.split("-")[1],
+          price: venue?.price_per_hour,
+        }}
+        reservationMinutes={15}
+      />
     </main>
   )
 }

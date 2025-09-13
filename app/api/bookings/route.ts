@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createBooking, updateBookingQRCode } from "@/lib/database/bookings"
+import { createBooking, createAtomicBooking, updateBookingQRCode } from "@/lib/database/bookings"
 import { generateBookingQRCode } from "@/utils/qr-code-generator"
 import { sendBookingConfirmationWithQR } from "@/services/notification-service"
 
@@ -8,15 +8,49 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Validate required fields
-    const requiredFields = ["user_id", "venue_id", "court_id", "booking_date", "start_time", "end_time", "total_amount"]
+    const requiredFields = ["user_id", "venue_id", "court_id", "booking_date", "start_time", "end_time"]
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 })
       }
     }
 
-    // Create booking
-    const booking = await createBooking(body)
+    let booking
+
+    // Use atomic booking if available, fallback to legacy booking
+    if (body.use_atomic !== false) {
+      try {
+        booking = await createAtomicBooking({
+          court_id: body.court_id,
+          booking_date: body.booking_date,
+          start_time: body.start_time,
+          end_time: body.end_time,
+          user_id: body.user_id,
+          venue_id: body.venue_id,
+          game_type_id: body.game_type_id,
+          total_slots: body.total_slots || 1,
+        })
+      } catch (atomicError) {
+        console.warn("Atomic booking failed, falling back to legacy booking:", atomicError)
+        // Fallback to legacy booking with total_amount
+        if (!body.total_amount) {
+          return NextResponse.json(
+            { error: "total_amount is required for legacy booking" },
+            { status: 400 }
+          )
+        }
+        booking = await createBooking(body)
+      }
+    } else {
+      // Legacy booking
+      if (!body.total_amount) {
+        return NextResponse.json(
+          { error: "total_amount is required for legacy booking" },
+          { status: 400 }
+        )
+      }
+      booking = await createBooking(body)
+    }
 
     // Generate QR code
     const qrCodeUrl = await generateBookingQRCode(booking.id)
@@ -46,6 +80,12 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Error creating booking:", error)
-    return NextResponse.json({ error: "Failed to create booking" }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: "Failed to create booking",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    )
   }
 }

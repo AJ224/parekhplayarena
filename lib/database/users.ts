@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase"
+import { createServerClient } from "@/lib/supabase"
 
 export interface User {
   id: string
@@ -17,6 +17,8 @@ export async function createUserProfile(userData: {
   full_name?: string
   phone?: string
 }) {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase.from("users").insert([userData]).select().single()
 
   if (error) {
@@ -28,6 +30,8 @@ export async function createUserProfile(userData: {
 }
 
 export async function getUserProfile(userId: string): Promise<User | null> {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase.from("users").select("*").eq("id", userId).single()
 
   if (error) {
@@ -39,6 +43,8 @@ export async function getUserProfile(userId: string): Promise<User | null> {
 }
 
 export async function updateUserProfile(userId: string, updates: Partial<User>) {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase.from("users").update(updates).eq("id", userId).select().single()
 
   if (error) {
@@ -50,6 +56,8 @@ export async function updateUserProfile(userId: string, updates: Partial<User>) 
 }
 
 export async function getUserNotifications(userId: string, limit = 20) {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase
     .from("notifications")
     .select("*")
@@ -66,6 +74,8 @@ export async function getUserNotifications(userId: string, limit = 20) {
 }
 
 export async function markNotificationAsRead(notificationId: string) {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase
     .from("notifications")
     .update({ is_read: true })
@@ -88,6 +98,8 @@ export async function createNotification(notificationData: {
   message: string
   data?: any
 }) {
+  const supabase = createServerClient()
+  
   const { data, error } = await supabase.from("notifications").insert([notificationData]).select().single()
 
   if (error) {

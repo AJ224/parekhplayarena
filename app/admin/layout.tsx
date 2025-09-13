@@ -1,9 +1,11 @@
 "use client"
 
 import type React from "react"
+import { useEffect, useState } from "react"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { supabase } from '@/lib/supabase'
 import {
   CalendarDays,
   CreditCard,
@@ -17,6 +19,7 @@ import {
   Trophy,
   Users,
   QrCode,
+  Loader2,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -28,6 +31,75 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    // Add a small delay to ensure session is established
+    setTimeout(() => {
+      checkAuth()
+    }, 100)
+  }, [])
+
+   const checkAuth = async () => {
+     try {
+       const { data: { session } } = await supabase.auth.getSession()
+       
+       console.log('Session:', session)
+       
+       if (!session) {
+         console.log('No session found, redirecting to login')
+         router.push('/login?redirectTo=' + encodeURIComponent(pathname))
+         return
+       }
+
+       console.log('User ID:', session.user.id)
+
+       // Check if user is an admin using API
+       const adminCheckResponse = await fetch('/api/auth/check-admin', {
+         headers: {
+           'Authorization': `Bearer ${session.access_token}`
+         }
+       })
+
+       if (!adminCheckResponse.ok) {
+         console.log('Admin check failed, redirecting to home')
+         router.push('/?error=unauthorized')
+         return
+       }
+
+       const adminData = await adminCheckResponse.json()
+       console.log('Admin check successful:', adminData)
+       setIsAuthenticated(true)
+     } catch (error) {
+       console.error('Auth check failed:', error)
+       router.push('/login?redirectTo=' + encodeURIComponent(pathname))
+     } finally {
+       setIsLoading(false)
+     }
+   }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Checking authentication...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   const routes = [
     {
@@ -115,12 +187,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </Link>
               ))}
             </nav>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t space-y-2">
               <Button variant="outline" className="w-full justify-start" asChild>
                 <Link href="/">
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <Globe className="mr-2 h-4 w-4" />
                   Back to Site
                 </Link>
+              </Button>
+              <Button variant="outline" className="w-full justify-start" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
               </Button>
             </div>
           </div>
@@ -152,12 +228,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </Link>
             ))}
           </nav>
-          <div className="p-4 border-t">
+          <div className="p-4 border-t space-y-2">
             <Button variant="outline" className="w-full justify-start" asChild>
               <Link href="/">
-                <LogOut className="mr-2 h-4 w-4" />
+                <Globe className="mr-2 h-4 w-4" />
                 Back to Site
               </Link>
+            </Button>
+            <Button variant="outline" className="w-full justify-start" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
             </Button>
           </div>
         </div>

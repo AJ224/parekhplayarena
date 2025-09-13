@@ -1,9 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { createServerClient } from "@/lib/supabase"
 
 export async function GET(request: NextRequest) {
   try {
     console.log("Fetching admin dashboard stats...")
+    
+    const supabase = createServerClient()
 
     // Get total bookings
     const { count: totalBookings } = await supabase.from("bookings").select("*", { count: "exact", head: true })
